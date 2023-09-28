@@ -368,9 +368,9 @@ class PerceptionAnalyzer3D(PerceptionAnalyzerBase):
             else:
                 tp_gt_df = self.get_ground_truth(status="TP", label=label)
                 tp_index = pd.unique(tp_gt_df.index.get_level_values(level=0))
-                if len(tp_index) == 0:
-                    logging.warning("There is no TP object. Could not calculate error.")
-                    return pd.DataFrame()
+                #if len(tp_index) == 0:
+                #    logging.warning("There is no TP object. Could not calculate error.")
+                #    return pd.DataFrame()
                 df_ = self.df.loc[tp_index]
 
             data["x"] = _summarize("x", df_)

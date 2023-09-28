@@ -764,7 +764,24 @@ class PerceptionAnalyzerBase(ABC):
             projection=mode.projection,
         )
         mode.setup_axis(ax, **kwargs)
-        gt_axes = mode.get_axes(self.get_ground_truth(**kwargs))
+#v start       gt_axes = mode.get_axes(self.get_ground_truth(**kwargs))
+        labelitem = ""
+        for key, item in kwargs.items():
+            print(key,item)
+            if key == "label":
+              if item == "bicycle":
+                  labelitem = "bicycle" 
+              elif item == "car":
+                  labelitem = "car"
+        print("labelitem",labelitem) # end='::')
+#        print(labelitem) 
+        if labelitem == "bicycle":
+            gt_axes = mode.get_axes(self.get_ground_truth(label="bicycle"))
+        elif labelitem == "car":
+            gt_axes = mode.get_axes(self.get_ground_truth(label="car"))
+        else:
+            gt_axes = mode.get_axes(self.get_ground_truth())
+#v finish      
         est_axes = mode.get_axes(self.get_estimation(**kwargs))
 
         if mode.is_2d():
@@ -774,7 +791,14 @@ class PerceptionAnalyzerBase(ABC):
             hist_bins = np.arange(min_value, max_value + step, step)
             gt_hist, xaxis = np.histogram(gt_axes, bins=hist_bins)
             est_hist, _ = np.histogram(est_axes, bins=hist_bins)
-            width = step if mode == PlotAxes.CONFIDENCE else 0.25 * ((max_value - min_value) / step)
+#v start
+            if bins == 1:
+                print("bins 1")
+                width = step if mode == PlotAxes.CONFIDENCE else 0.02 * ((max_value - min_value) / step)
+            else:
+                width = step if mode == PlotAxes.CONFIDENCE else 0.25 * ((max_value - min_value) / step)
+            #width = step if mode == PlotAxes.CONFIDENCE else 0.25 * ((max_value - min_value) / step)
+#v finish 
             ax.bar(xaxis[:-1] - 0.5 * width, gt_hist, width, label="GT")
             ax.bar(xaxis[:-1] + 0.5 * width, est_hist, width, label="Estimation")
         else:
